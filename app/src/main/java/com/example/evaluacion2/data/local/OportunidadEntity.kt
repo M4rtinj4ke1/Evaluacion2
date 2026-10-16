@@ -3,8 +3,10 @@ package com.example.evaluacion2.data.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+// @Entity le dice a Room que esta clase es una tabla llamada "oportunidades"
 @Entity(tableName = "oportunidades")
 data class OportunidadEntity(
+    // Número único de cada oportunidad. Room lo asigna solo (1, 2, 3...)
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val nombre: String,
     val tipo: String,
