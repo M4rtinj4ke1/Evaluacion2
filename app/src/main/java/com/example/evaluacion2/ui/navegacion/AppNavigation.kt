@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.evaluacion2.ui.login.LoginScreen
+import com.example.evaluacion2.ui.menu.MenuScreen
 import com.example.evaluacion2.ui.oportunidad.ListaOportunidadesScreen
 import com.example.evaluacion2.ui.oportunidad.OportunidadFormScreen
 import com.example.evaluacion2.ui.oportunidad.OportunidadViewModel
@@ -14,10 +16,24 @@ import com.example.evaluacion2.ui.oportunidad.OportunidadViewModel
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    // Un solo ViewModel compartido por las dos pantallas
+    // Un solo ViewModel compartido por las pantallas de oportunidades
     val viewModel: OportunidadViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = "lista") {
+    // La app empieza en el login
+    NavHost(navController = navController, startDestination = "login") {
+
+        composable("login") {
+            LoginScreen(navController)
+        }
+
+        // "menu/{usuario}": recibe el nombre del usuario que inició sesión
+        composable(
+            route = "menu/{usuario}",
+            arguments = listOf(navArgument("usuario") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val usuario = backStackEntry.arguments?.getString("usuario") ?: ""
+            MenuScreen(navController, usuario)
+        }
 
         composable("lista") {
             ListaOportunidadesScreen(navController, viewModel)
