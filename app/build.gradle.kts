@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.navigation.compose)
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
