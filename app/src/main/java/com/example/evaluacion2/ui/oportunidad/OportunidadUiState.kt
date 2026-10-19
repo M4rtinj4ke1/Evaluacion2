@@ -13,6 +13,8 @@ data class OportunidadUiState(
     val estado: String = "Evento identificado",
     val observaciones: String = "",
     val fotoUri: Uri? = null,
+    val latitud: Double? = null,
+    val longitud: Double? = null,
     // Un error en null significa que el campo está bien
     val nombreError: String? = null,
     val tipoError: String? = null,

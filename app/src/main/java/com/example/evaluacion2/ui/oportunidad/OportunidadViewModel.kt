@@ -48,7 +48,10 @@ class OportunidadViewModel(application: Application) : AndroidViewModel(applicat
                 prioridad = o.prioridad,
                 potencial = o.potencial,
                 estado = o.estado,
-                observaciones = o.observaciones
+                observaciones = o.observaciones,
+                fotoUri = o.fotoUri?.let { Uri.parse(it) },
+                latitud = o.latitud,
+                longitud = o.longitud
             )
         }
     }
@@ -64,6 +67,9 @@ class OportunidadViewModel(application: Application) : AndroidViewModel(applicat
     fun onObservacionesChange(valor: String) = _estado.update { it.copy(observaciones = valor) }
 
     fun onFotoChange(uri: Uri?) = _estado.update { it.copy(fotoUri = uri) }
+
+    fun onUbicacionChange(latitud: Double, longitud: Double) =
+        _estado.update { it.copy(latitud = latitud, longitud = longitud) }
 
     // Revisa los campos obligatorios. Devuelve true si todo está bien
     fun validarFormulario(): Boolean {
@@ -100,7 +106,10 @@ class OportunidadViewModel(application: Application) : AndroidViewModel(applicat
             prioridad = e.prioridad,
             potencial = e.potencial,
             estado = e.estado,
-            observaciones = e.observaciones.trim()
+            observaciones = e.observaciones.trim(),
+            fotoUri = e.fotoUri?.toString(),
+            latitud = e.latitud,
+            longitud = e.longitud
         )
         viewModelScope.launch {
             _estado.update { it.copy(guardando = true) }

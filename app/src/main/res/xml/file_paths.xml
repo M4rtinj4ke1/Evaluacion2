@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <cache-path name="fotos" path="." />
+    <!-- Las fotos se guardan en la carpeta privada de la app (no se borran sola como el caché) -->
+    <files-path name="fotos" path="fotos/" />
 </paths>

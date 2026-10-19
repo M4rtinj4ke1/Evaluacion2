@@ -15,5 +15,9 @@ data class OportunidadEntity(
     val prioridad: String,
     val potencial: String,
     val estado: String,
-    val observaciones: String
+    val observaciones: String,
+    // Foto de evidencia (dirección de la imagen guardada) y ubicación. Null = no se registró
+    val fotoUri: String? = null,
+    val latitud: Double? = null,
+    val longitud: Double? = null
 )

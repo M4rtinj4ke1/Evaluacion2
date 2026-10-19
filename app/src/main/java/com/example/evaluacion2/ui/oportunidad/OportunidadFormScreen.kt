@@ -1,6 +1,8 @@
 package com.example.evaluacion2.ui.oportunidad
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
+import com.example.evaluacion2.ui.components.SeccionUbicacion
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -149,19 +151,28 @@ fun OportunidadFormScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // ===== AGREGA ESTO =====
+            // Recurso nativo 1: cámara (foto de evidencia)
             SeccionFoto(
                 uri = estado.fotoUri,
                 onFotoCapturada = viewModel::onFotoChange
             )
-            // =======================
+
+            // Recurso nativo 2: ubicación (lugar de la oportunidad)
+            SeccionUbicacion(
+                latitud = estado.latitud,
+                longitud = estado.longitud,
+                onUbicacionObtenida = viewModel::onUbicacionChange
+            )
 
             Button(
                 onClick = { viewModel.guardar() },
                 enabled = !estado.guardando,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(if (estado.guardando) "Guardando..." else "Guardar")
+                // El texto del botón cambia con un fundido suave al guardar
+                Crossfade(targetState = estado.guardando, label = "textoGuardar") { guardando ->
+                    Text(if (guardando) "Guardando..." else "Guardar")
+                }
             }
         }
     }

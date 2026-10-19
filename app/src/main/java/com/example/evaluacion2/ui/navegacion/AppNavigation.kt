@@ -1,5 +1,9 @@
 package com.example.evaluacion2.ui.navegacion
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -20,7 +24,15 @@ fun AppNavigation() {
     val viewModel: OportunidadViewModel = viewModel()
 
     // La app empieza en el login
-    NavHost(navController = navController, startDestination = "login") {
+    // Las pantallas se deslizan y se funden al navegar (animación de transición)
+    NavHost(
+        navController = navController,
+        startDestination = "login",
+        enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+        exitTransition = { slideOutHorizontally(targetOffsetX = { -it / 3 }) + fadeOut() },
+        popEnterTransition = { slideInHorizontally(initialOffsetX = { -it / 3 }) + fadeIn() },
+        popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() }
+    ) {
 
         composable("login") {
             LoginScreen(navController)

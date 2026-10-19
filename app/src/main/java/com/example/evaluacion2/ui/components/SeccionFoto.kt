@@ -27,9 +27,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import java.io.File
 
-// Crea un archivo temporal vacío donde la cámara va a guardar la foto
+// Crea un archivo vacío donde la cámara va a guardar la foto.
+// Va en filesDir (y no en cacheDir) para que la foto siga existiendo cuando se vuelva a abrir la oportunidad
 private fun crearUriFoto(context: Context): Uri {
-    val archivo = File.createTempFile("foto_", ".jpg", context.cacheDir)
+    val carpeta = File(context.filesDir, "fotos").apply { mkdirs() }
+    val archivo = File.createTempFile("foto_", ".jpg", carpeta)
     return FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", archivo)
 }
 
