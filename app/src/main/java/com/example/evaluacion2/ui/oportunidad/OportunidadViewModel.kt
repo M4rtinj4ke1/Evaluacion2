@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import android.net.Uri
 
 class OportunidadViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -61,6 +62,8 @@ class OportunidadViewModel(application: Application) : AndroidViewModel(applicat
     fun onPotencialChange(valor: String) = _estado.update { it.copy(potencial = valor, potencialError = null) }
     fun onEstadoChange(valor: String) = _estado.update { it.copy(estado = valor) }
     fun onObservacionesChange(valor: String) = _estado.update { it.copy(observaciones = valor) }
+
+    fun onFotoChange(uri: Uri?) = _estado.update { it.copy(fotoUri = uri) }
 
     // Revisa los campos obligatorios. Devuelve true si todo está bien
     fun validarFormulario(): Boolean {

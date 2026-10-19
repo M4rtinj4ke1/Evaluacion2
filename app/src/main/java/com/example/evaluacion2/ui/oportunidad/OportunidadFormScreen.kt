@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-
+import com.example.evaluacion2.ui.components.SeccionFoto
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -148,6 +148,13 @@ fun OportunidadFormScreen(
                 minLines = 2,
                 modifier = Modifier.fillMaxWidth()
             )
+
+            // ===== AGREGA ESTO =====
+            SeccionFoto(
+                uri = estado.fotoUri,
+                onFotoCapturada = viewModel::onFotoChange
+            )
+            // =======================
 
             Button(
                 onClick = { viewModel.guardar() },

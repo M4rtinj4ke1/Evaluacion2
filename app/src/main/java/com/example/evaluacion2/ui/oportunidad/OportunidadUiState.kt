@@ -1,4 +1,5 @@
 package com.example.evaluacion2.ui.oportunidad
+import android.net.Uri
 
 // "Foto" del formulario: lo que hay escrito y los errores de cada campo
 data class OportunidadUiState(
@@ -11,6 +12,7 @@ data class OportunidadUiState(
     val potencial: String = "",
     val estado: String = "Evento identificado",
     val observaciones: String = "",
+    val fotoUri: Uri? = null,
     // Un error en null significa que el campo está bien
     val nombreError: String? = null,
     val tipoError: String? = null,
