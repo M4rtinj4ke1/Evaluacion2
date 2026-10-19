@@ -6,8 +6,8 @@ Proyecto de la asignatura **DSY1105 – Desarrollo de Aplicaciones Móviles** (E
 
 ## Integrantes
 
-- _Nombre Apellido_
-- _Nombre Apellido_
+- Martin Jaque
+- Liza Micele
 
 ## Funcionalidades
 
