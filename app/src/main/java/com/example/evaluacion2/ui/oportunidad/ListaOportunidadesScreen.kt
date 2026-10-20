@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -38,6 +39,16 @@ import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.example.evaluacion2.ui.components.ImagenInteligente
 
+import androidx.compose.material3.FilterChip
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExposedDropdownMenuBox
+
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+
+
 // Color de cada prioridad (rojo = alta, amarillo = media, verde = baja)
 private fun colorPrioridad(prioridad: String): Color = when (prioridad) {
     "Alta" -> Color(0xFFD32F2F)
@@ -54,6 +65,15 @@ fun ListaOportunidadesScreen(
 ) {
     // Lista que viene de Room y se actualiza sola
     val oportunidades by viewModel.oportunidades.collectAsState()
+
+    var filtroEstado by remember { mutableStateOf("Todos los estados") }
+    var filtroPrioridad by remember { mutableStateOf("Todas") }
+    var estadoMenuExpandido by remember { mutableStateOf(false) }
+
+    val oportunidadesFiltradas = oportunidades.filter { oportunidad ->
+        (filtroEstado == "Todos los estados" || oportunidad.estado == filtroEstado) &&
+                (filtroPrioridad == "Todas" || oportunidad.prioridad == filtroPrioridad)
+    }
 
     Scaffold(
         topBar = {
@@ -77,23 +97,138 @@ fun ListaOportunidadesScreen(
             }
         } else {
             LazyColumn(
-                modifier = Modifier.padding(innerPadding),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(oportunidades, key = { it.id }) { oportunidad ->
+
+
+
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+
+                        Text(
+                            text = "Filtrar por estado",
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+
+                        ExposedDropdownMenuBox(
+                            expanded = estadoMenuExpandido,
+                            onExpandedChange = {
+                                estadoMenuExpandido = !estadoMenuExpandido
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            androidx.compose.material3.OutlinedTextField(
+                                value = filtroEstado,
+                                onValueChange = {},
+                                readOnly = true,
+                                label = { Text("Estado de gestión") },
+                                trailingIcon = {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(
+                                        expanded = estadoMenuExpandido
+                                    )
+                                },
+                                modifier = Modifier
+                                    .menuAnchor()
+                                    .fillMaxWidth()
+                            )
+
+                            ExposedDropdownMenu(
+                                expanded = estadoMenuExpandido,
+                                onDismissRequest = {
+                                    estadoMenuExpandido = false
+                                }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("Todos los estados") },
+                                    onClick = {
+                                        filtroEstado = "Todos los estados"
+                                        estadoMenuExpandido = false
+                                    }
+                                )
+
+                                OportunidadOpciones.estados.forEach { estado ->
+                                    DropdownMenuItem(
+                                        text = { Text(estado) },
+                                        onClick = {
+                                            filtroEstado = estado
+                                            estadoMenuExpandido = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+
+
+                        Text(
+                            text = "Filtrar por prioridad",
+                            modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            listOf("Todas", "Alta", "Media", "Baja")
+                                .forEach { prioridad ->
+                                    FilterChip(
+                                        selected = filtroPrioridad == prioridad,
+                                        onClick = { filtroPrioridad = prioridad },
+                                        label = { Text(prioridad) }
+                                    )
+                                }
+                        }
+                    }
+                }
+
+
+
+                item {
+                    if (oportunidadesFiltradas.isEmpty()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text("No se encontraron oportunidades")
+                            Text(
+                                "Prueba cambiando los filtros seleccionados.",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                        Button(
+                            onClick = {
+                                filtroEstado = "Todos los estados"
+                                filtroPrioridad = "Todas"
+                            },
+                            modifier = Modifier.padding(top = 12.dp)
+                        ) {
+                            Text("Limpiar filtros")
+                        }
+
+                    }
+                }
+
+                items(oportunidadesFiltradas, key = { it.id }) { oportunidad ->
                     // El color de la prioridad cambia con una transición suave al editarla
                     val colorIndicador by animateColorAsState(
                         targetValue = colorPrioridad(oportunidad.prioridad),
                         label = "colorPrioridad"
                     )
 
-                    // Al tocar una oportunidad se abre el formulario para editarla
+                    // Al tocar una oportunidad se abre su pantalla de detalle
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .animateContentSize()
-                            .clickable { navController.navigate("form/${oportunidad.id}") }
+                            .clickable { navController.navigate("detalle/${oportunidad.id}") }
                     ) {
                         Row(
                             modifier = Modifier.padding(16.dp),

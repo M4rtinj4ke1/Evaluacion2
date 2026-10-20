@@ -16,6 +16,7 @@ import com.example.evaluacion2.ui.menu.MenuScreen
 import com.example.evaluacion2.ui.oportunidad.ListaOportunidadesScreen
 import com.example.evaluacion2.ui.oportunidad.OportunidadFormScreen
 import com.example.evaluacion2.ui.oportunidad.OportunidadViewModel
+import com.example.evaluacion2.ui.oportunidad.DetalleOportunidadScreen
 
 @Composable
 fun AppNavigation() {
@@ -49,6 +50,15 @@ fun AppNavigation() {
 
         composable("lista") {
             ListaOportunidadesScreen(navController, viewModel)
+        }
+
+        // Muestra los datos de una oportunidad sin permitir editarlos directamente
+        composable(
+            route = "detalle/{id}",
+            arguments = listOf(navArgument("id") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("id") ?: -1
+            DetalleOportunidadScreen(navController, viewModel, id)
         }
 
         // "form/{id}": id = -1 es una oportunidad nueva, y otro número es editar
