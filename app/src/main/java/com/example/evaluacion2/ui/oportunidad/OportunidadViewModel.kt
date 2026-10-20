@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import android.net.Uri
 
+
+
 class OportunidadViewModel(application: Application) : AndroidViewModel(application) {
 
     // Conexión con la base de datos a través del Repository
@@ -132,4 +134,11 @@ class OportunidadViewModel(application: Application) : AndroidViewModel(applicat
     fun onGuardadoConsumido() {
         _estado.update { it.copy(guardadoExitosamente = false) }
     }
+
+    fun eliminarOportunidad(oportunidad: OportunidadEntity) {
+        viewModelScope.launch {
+            repository.eliminar(oportunidad)
+        }
+    }
+
 }
