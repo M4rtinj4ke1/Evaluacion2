@@ -118,6 +118,16 @@ class OportunidadViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
+    // Elimina la oportunidad que se está editando y avisa a la pantalla para que vuelva a la lista
+    fun eliminar() {
+        val id = _estado.value.id
+        if (id == 0) return
+        viewModelScope.launch {
+            repository.obtenerPorId(id)?.let { repository.eliminar(it) }
+            _estado.update { it.copy(guardadoExitosamente = true) }
+        }
+    }
+
     // La pantalla llama esto después de volver a la lista
     fun onGuardadoConsumido() {
         _estado.update { it.copy(guardadoExitosamente = false) }

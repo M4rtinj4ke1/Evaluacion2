@@ -15,7 +15,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +45,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
@@ -46,6 +59,7 @@ fun OportunidadFormScreen(
 ) {
     // La pantalla "mira" el estado del ViewModel y se redibuja sola
     val estado by viewModel.estado.collectAsState()
+    var mostrarConfirmacion by remember { mutableStateOf(false) }
 
     // Al entrar: formulario vacío (nueva) o cargar los datos (editar)
     LaunchedEffect(oportunidadId) {
@@ -59,6 +73,24 @@ fun OportunidadFormScreen(
             viewModel.onGuardadoConsumido()
             navController.popBackStack()
         }
+    }
+
+    // Confirmación antes de eliminar
+    if (mostrarConfirmacion) {
+        AlertDialog(
+            onDismissRequest = { mostrarConfirmacion = false },
+            title = { Text("Eliminar oportunidad") },
+            text = { Text("¿Seguro que quieres eliminarla? Esta acción no se puede deshacer.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    mostrarConfirmacion = false
+                    viewModel.eliminar()
+                }) { Text("Eliminar") }
+            },
+            dismissButton = {
+                TextButton(onClick = { mostrarConfirmacion = false }) { Text("Cancelar") }
+            }
+        )
     }
 
     Scaffold(
@@ -87,6 +119,7 @@ fun OportunidadFormScreen(
                 value = estado.nombre,
                 onValueChange = viewModel::onNombreChange,
                 label = { Text("Nombre de la oportunidad") },
+                leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                 isError = estado.nombreError != null,
                 supportingText = { Text(estado.nombreError ?: "") },
                 modifier = Modifier.fillMaxWidth()
@@ -94,6 +127,7 @@ fun OportunidadFormScreen(
 
             CampoSelector(
                 etiqueta = "Tipo de oportunidad",
+                icono = Icons.Default.Menu,
                 valor = estado.tipo,
                 opciones = OportunidadOpciones.tipos,
                 error = estado.tipoError,
@@ -104,6 +138,7 @@ fun OportunidadFormScreen(
                 value = estado.descripcion,
                 onValueChange = viewModel::onDescripcionChange,
                 label = { Text("Descripción") },
+                leadingIcon = { Icon(Icons.Default.Info, contentDescription = null) },
                 minLines = 3,
                 isError = estado.descripcionError != null,
                 supportingText = { Text(estado.descripcionError ?: "") },
@@ -114,6 +149,7 @@ fun OportunidadFormScreen(
                 value = estado.fuente,
                 onValueChange = viewModel::onFuenteChange,
                 label = { Text("Fuente de información") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 isError = estado.fuenteError != null,
                 supportingText = { Text(estado.fuenteError ?: "") },
                 modifier = Modifier.fillMaxWidth()
@@ -121,6 +157,7 @@ fun OportunidadFormScreen(
 
             CampoSelector(
                 etiqueta = "Prioridad",
+                icono = Icons.Default.Warning,
                 valor = estado.prioridad,
                 opciones = OportunidadOpciones.prioridades,
                 error = estado.prioridadError,
@@ -129,6 +166,7 @@ fun OportunidadFormScreen(
 
             CampoSelector(
                 etiqueta = "Potencial comercial",
+                icono = Icons.Default.Star,
                 valor = estado.potencial,
                 opciones = OportunidadOpciones.potenciales,
                 error = estado.potencialError,
@@ -137,6 +175,7 @@ fun OportunidadFormScreen(
 
             CampoSelector(
                 etiqueta = "Estado de gestión",
+                icono = Icons.Default.CheckCircle,
                 valor = estado.estado,
                 opciones = OportunidadOpciones.estados,
                 error = null,
@@ -147,6 +186,7 @@ fun OportunidadFormScreen(
                 value = estado.observaciones,
                 onValueChange = viewModel::onObservacionesChange,
                 label = { Text("Observaciones (opcional)") },
+                leadingIcon = { Icon(Icons.Default.Create, contentDescription = null) },
                 minLines = 2,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -174,6 +214,16 @@ fun OportunidadFormScreen(
                     Text(if (guardando) "Guardando..." else "Guardar")
                 }
             }
+
+            // Eliminar: solo aparece al editar una oportunidad que ya existe
+            if (oportunidadId != -1) {
+                OutlinedButton(
+                    onClick = { mostrarConfirmacion = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Eliminar oportunidad", color = MaterialTheme.colorScheme.error)
+                }
+            }
         }
     }
 }
@@ -182,6 +232,7 @@ fun OportunidadFormScreen(
 @Composable
 private fun CampoSelector(
     etiqueta: String,
+    icono: ImageVector,
     valor: String,
     opciones: List<String>,
     error: String?,
@@ -195,6 +246,7 @@ private fun CampoSelector(
             onValueChange = {},
             readOnly = true,
             label = { Text(etiqueta) },
+            leadingIcon = { Icon(icono, contentDescription = null) },
             trailingIcon = {
                 Icon(
                     if (expandido) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
