@@ -14,13 +14,15 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ContactoViewModel(application: Application) :
-    AndroidViewModel(application) {
-
+// @JvmOverloads: Android crea el ViewModel solo con Application (usa Room real);
+// en las pruebas unitarias se le pasa un repositorio simulado con MockK.
+class ContactoViewModel @JvmOverloads constructor(
+    application: Application,
     // Conexión con la base de datos a través del Repository
-    private val repository = ContactoRepository(
+    private val repository: ContactoRepository = ContactoRepository(
         AppDatabase.getDatabase(application).contactoDao()
     )
+) : AndroidViewModel(application) {
 
     // Lista general de contactos
     val contactos: StateFlow<List<ContactoEntity>> =

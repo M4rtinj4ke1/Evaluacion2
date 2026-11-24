@@ -17,12 +17,14 @@ import android.net.Uri
 
 
 
-class OportunidadViewModel(application: Application) : AndroidViewModel(application) {
-
-    // Conexión con la base de datos a través del Repository
-    private val repository = OportunidadRepository(
+// @JvmOverloads: Android crea el ViewModel solo con Application (usa el repositorio real);
+// en las pruebas unitarias se le pasa un repositorio simulado con MockK.
+class OportunidadViewModel @JvmOverloads constructor(
+    application: Application,
+    private val repository: OportunidadRepository = OportunidadRepository(
         AppDatabase.getDatabase(application).oportunidadDao()
     )
+) : AndroidViewModel(application) {
 
     // Lista de oportunidades para la pantalla de la lista (se actualiza sola)
     val oportunidades: StateFlow<List<OportunidadEntity>> = repository.oportunidades

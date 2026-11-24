@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.evaluacion2.data.local.AppDatabase
+import com.example.evaluacion2.data.local.LocalidadDao
 import com.example.evaluacion2.data.local.OrganizacionEntity
 import com.example.evaluacion2.data.repository.OrganizacionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,16 +15,16 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class OrganizacionViewModel(application: Application) :
-    AndroidViewModel(application) {
-
-    private val database = AppDatabase.getDatabase(application)
-
+// @JvmOverloads: Android crea el ViewModel solo con Application (usa Room real);
+// en las pruebas unitarias se le pasan el repositorio y el DAO simulados con MockK.
+class OrganizacionViewModel @JvmOverloads constructor(
+    application: Application,
     // Conexión con la base de datos a través del Repository
-    private val repository = OrganizacionRepository(database.organizacionDao())
-
+    private val repository: OrganizacionRepository =
+        OrganizacionRepository(AppDatabase.getDatabase(application).organizacionDao()),
     // DAO de localidades para consultar regiones y comunas
-    private val localidadDao = database.localidadDao()
+    private val localidadDao: LocalidadDao = AppDatabase.getDatabase(application).localidadDao()
+) : AndroidViewModel(application) {
 
     // Lista de organizaciones
     val organizaciones: StateFlow<List<OrganizacionEntity>> =

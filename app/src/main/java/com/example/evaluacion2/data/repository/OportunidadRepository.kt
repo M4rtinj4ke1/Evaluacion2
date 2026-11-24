@@ -3,6 +3,7 @@ package com.example.evaluacion2.data.repository
 import android.util.Log
 import com.example.evaluacion2.data.local.OportunidadDao
 import com.example.evaluacion2.data.local.OportunidadEntity
+import com.example.evaluacion2.data.remote.OportunidadApiService
 import com.example.evaluacion2.data.remote.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -14,9 +15,11 @@ import kotlinx.coroutines.withContext
  * Actúa bajo el patrón Single Source of Truth: los cambios se sincronizan en la API
  * y en Room, permitiendo que la UI reaccione de inmediato y funcione con o sin conexión.
  */
-class OportunidadRepository(private val dao: OportunidadDao) {
-
-    private val api = RetrofitClient.oportunidadApiService
+class OportunidadRepository(
+    private val dao: OportunidadDao,
+    // Se recibe por constructor para poder reemplazarlo por un mock (MockK) en las pruebas unitarias
+    private val api: OportunidadApiService = RetrofitClient.oportunidadApiService
+) {
 
     // Flujo observado por el ViewModel (respaldado por Room)
     val oportunidades: Flow<List<OportunidadEntity>> = dao.obtenerTodas()
