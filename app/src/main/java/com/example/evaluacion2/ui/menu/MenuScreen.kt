@@ -74,6 +74,18 @@ fun MenuScreen(navController: NavController, usuario: String) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Acceso a la API externa de feriados
+            Button(
+                onClick = {
+                    navController.navigate("feriados")
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Feriados de Chile (API externa)")
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             OutlinedButton(
                 onClick = {
                     navController.navigate("login") {

@@ -24,6 +24,8 @@ import com.example.evaluacion2.ui.organizacion.OrganizacionFormScreen
 import com.example.evaluacion2.ui.organizacion.DetalleOrganizacionScreen
 import com.example.evaluacion2.ui.contacto.ContactoViewModel
 import com.example.evaluacion2.ui.contacto.ContactoFormScreen
+import com.example.evaluacion2.ui.feriado.FeriadoViewModel
+import com.example.evaluacion2.ui.feriado.FeriadosScreen
 
 @Composable
 fun AppNavigation() {
@@ -104,6 +106,12 @@ fun AppNavigation() {
                 oportunidadViewModel,
                 id
             )
+        }
+
+        // API externa: feriados de Chile
+        composable("feriados") {
+            val feriadoViewModel: FeriadoViewModel = viewModel()
+            FeriadosScreen(navController, feriadoViewModel)
         }
 
         // Módulo de organizaciones
