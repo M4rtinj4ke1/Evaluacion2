@@ -18,8 +18,8 @@ object RetrofitClient {
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
-        .connectTimeout(1, TimeUnit.SECONDS)
-        .readTimeout(1, TimeUnit.SECONDS)
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
         .build()
 
     val oportunidadApiService: OportunidadApiService by lazy {
@@ -29,5 +29,17 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(OportunidadApiService::class.java)
+    }
+
+    // API EXTERNA: feriados de Chile (servicio de terceros, por HTTPS)
+    const val FERIADOS_URL: String = "https://api.boostr.cl/"
+
+    val feriadoApiService: FeriadoApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(FERIADOS_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(FeriadoApiService::class.java)
     }
 }

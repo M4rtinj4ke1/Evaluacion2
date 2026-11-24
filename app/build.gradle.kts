@@ -13,7 +13,9 @@ android {
     defaultConfig {
         applicationId = "com.example.evaluacion2"
         minSdk = 24
-        targetSdk = 37
+        // targetSdk 36: Android 17 (API 37) bloquea por defecto el acceso a la red local (10.0.2.2)
+        // sin el permiso ACCESS_LOCAL_NETWORK. Con 36 la app mantiene acceso al microservicio.
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -21,6 +23,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Genera el reporte de cobertura: gradlew createDebugUnitTestCoverageReport
+            enableUnitTestCoverage = true
+        }
         release {
             optimization {
                 enable = true
@@ -34,6 +40,10 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    testOptions {
+        // android.util.Log devuelve valores por defecto en las pruebas unitarias (no lanza excepción)
+        unitTests.isReturnDefaultValues = true
     }
 }
 
@@ -59,6 +69,9 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     testImplementation(libs.junit)
+    // Pruebas unitarias: MockK para simular dependencias y coroutines-test para funciones suspend
+    testImplementation("io.mockk:mockk:1.14.5")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
