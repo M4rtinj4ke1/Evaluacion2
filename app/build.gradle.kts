@@ -47,9 +47,10 @@ android {
         }
         release {
             signingConfig = signingConfigs.getByName("release")
+            // Optimización R8 desactivada: el modo experimental "packageScope" (optimizar solo algunas
+            // librerías) provocaba IllegalAccessError al iniciar la app. El APK queda firmado igual.
             optimization {
-                enable = true
-                packageScope = setOf("androidx.**", "kotlin.**", "kotlinx.**")
+                enable = false
             }
         }
     }
