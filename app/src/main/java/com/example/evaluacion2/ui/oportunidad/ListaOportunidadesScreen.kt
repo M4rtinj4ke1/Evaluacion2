@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
@@ -47,6 +48,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.IconButton
 
 
 // Color de cada prioridad (rojo = alta, amarillo = media, verde = baja)
@@ -77,7 +79,21 @@ fun ListaOportunidadesScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Oportunidades") })
+            TopAppBar(
+                title = { Text("Oportunidades") },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navController.popBackStack()
+                        }
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver al menú"
+                        )
+                    }
+                }
+            )
         },
         floatingActionButton = {
             // Botón "+": abre el formulario vacío (-1 significa "nueva")

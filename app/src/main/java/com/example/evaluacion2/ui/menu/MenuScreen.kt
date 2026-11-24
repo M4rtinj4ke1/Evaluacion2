@@ -1,3 +1,4 @@
+
 package com.example.evaluacion2.ui.menu
 
 import androidx.compose.foundation.layout.Arrangement
@@ -20,13 +21,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
-// Menú principal: lleva a la lista de oportunidades o cierra la sesión
+// Menú principal de la aplicación
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuScreen(navController: NavController, usuario: String) {
+
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Menú") }) }
+        topBar = {
+            TopAppBar(
+                title = { Text("Menú") }
+            )
+        }
     ) { innerPadding ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -35,11 +42,19 @@ fun MenuScreen(navController: NavController, usuario: String) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Bienvenido, $usuario", style = MaterialTheme.typography.headlineSmall)
+
+            Text(
+                "Bienvenido, $usuario",
+                style = MaterialTheme.typography.headlineSmall
+            )
+
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Acceso al módulo de oportunidades
             Button(
-                onClick = { navController.navigate("lista") },
+                onClick = {
+                    navController.navigate("lista")
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Ver oportunidades")
@@ -47,11 +62,24 @@ fun MenuScreen(navController: NavController, usuario: String) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Acceso al módulo de organizaciones
+            Button(
+                onClick = {
+                    navController.navigate("organizaciones")
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Ver organizaciones")
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             OutlinedButton(
                 onClick = {
-                    // Vuelve al login y borra el menú del historial
                     navController.navigate("login") {
-                        popUpTo("menu/{usuario}") { inclusive = true }
+                        popUpTo("menu/{usuario}") {
+                            inclusive = true
+                        }
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
