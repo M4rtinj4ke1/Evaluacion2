@@ -10,3 +10,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# Modelos que Gson llena por reflexion (API propia y API externa): no renombrar ni eliminar
+-keep class com.example.evaluacion2.data.local.** { *; }
+-keep class com.example.evaluacion2.data.remote.** { *; }

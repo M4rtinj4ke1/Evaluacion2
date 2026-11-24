@@ -1,7 +1,15 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+}
+
+// Datos de la firma del APK (archivo keystore.properties en la raíz del proyecto)
+val keystoreProps = Properties().apply {
+    val archivo = rootProject.file("keystore.properties")
+    if (archivo.exists()) archivo.inputStream().use { load(it) }
 }
 
 android {
@@ -22,12 +30,23 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // Firma digital del APK de release con el archivo .jks
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file(keystoreProps.getProperty("storeFile", "keystore/evaluacion2.jks"))
+            storePassword = keystoreProps.getProperty("storePassword")
+            keyAlias = keystoreProps.getProperty("keyAlias")
+            keyPassword = keystoreProps.getProperty("keyPassword")
+        }
+    }
+
     buildTypes {
         debug {
             // Genera el reporte de cobertura: gradlew createDebugUnitTestCoverageReport
             enableUnitTestCoverage = true
         }
         release {
+            signingConfig = signingConfigs.getByName("release")
             optimization {
                 enable = true
                 packageScope = setOf("androidx.**", "kotlin.**", "kotlinx.**")
@@ -44,6 +63,11 @@ android {
     testOptions {
         // android.util.Log devuelve valores por defecto en las pruebas unitarias (no lanza excepción)
         unitTests.isReturnDefaultValues = true
+        unitTests.all {
+            // MockK (Byte Buddy) con Java 25: habilita el soporte y evita advertencias en consola
+            it.systemProperty("net.bytebuddy.experimental", "true")
+            it.jvmArgs("-XX:+EnableDynamicAgentLoading")
+        }
     }
 }
 
