@@ -33,4 +33,8 @@ interface OportunidadDao {
     // DELETE: elimina una oportunidad
     @Delete
     suspend fun eliminar(oportunidad: OportunidadEntity)
+
+    // DELETE: limpia la tabla local para sincronización con la API
+    @Query("DELETE FROM oportunidades")
+    suspend fun limpiarTodas()
 }

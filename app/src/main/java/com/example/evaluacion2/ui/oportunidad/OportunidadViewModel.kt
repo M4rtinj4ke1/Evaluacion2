@@ -32,6 +32,18 @@ class OportunidadViewModel(application: Application) : AndroidViewModel(applicat
     private val _estado = MutableStateFlow(OportunidadUiState())
     val estado: StateFlow<OportunidadUiState> = _estado.asStateFlow()
 
+    init {
+        // Al iniciar, sincronizamos las oportunidades desde la API en MySQL
+        refrescar()
+    }
+
+    // Sincroniza manualmente la lista con la API REST
+    fun refrescar() {
+        viewModelScope.launch {
+            repository.refrescarDesdeApi()
+        }
+    }
+
     // Deja el formulario vacío (para crear una oportunidad nueva)
     fun nuevaOportunidad() {
         _estado.value = OportunidadUiState()
